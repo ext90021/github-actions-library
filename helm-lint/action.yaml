@@ -28,6 +28,6 @@ runs:
           github.rest.issues.createComment ({
             owner: context.repo.owner, 
             repo: context.repo.repo,
-            issue_numer: context.issue.number,
+            issue_number: context.issue.number,
             body: 'Lint Helm chart:\n```yaml\n' + lint_result + '\n```'
           });
