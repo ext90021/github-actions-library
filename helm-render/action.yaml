@@ -5,10 +5,10 @@ inputs:
     description: 'path to template' 
     required: true 
   report_full_template: 
-    description: 'Indicated if the full template should be posted to github comment. Consider switchit it off for massive charts' 
+    description: 'Indicated if the full template should be posted to github comment. Consider switchit it off for massive charts'
     default: true 
     required: false 
-  render_args: 
+  template_args:
     description: 'Adds additional arguments to "helm template" command' 
     required: false 
 runs: 
