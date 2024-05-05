@@ -1,4 +1,4 @@
-name: "Render Helm Chart" 
+name: "Helm Chart Render"
 description: "Runs basic Helm template render" 
 inputs: 
   template_path: 

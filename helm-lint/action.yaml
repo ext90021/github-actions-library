@@ -1,4 +1,4 @@
-name: "Lint Helm Chart" 
+name: "Helm Chart Lint"
 description: "Runs basic Helm lint" 
 inputs: 
   template_path: 
