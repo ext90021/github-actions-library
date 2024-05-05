@@ -71,7 +71,7 @@ runs:
           const content = fs.readFileSync('content.yaml', 'utf8');
           const prNumber = context.payload.pull_request.number;
           
-          github.issues.createComment (
+          github.issues.createComment ({
               owner: context.repo.owner, 
               repo: context.repo.repo,
               issue_numer: prNumber,
