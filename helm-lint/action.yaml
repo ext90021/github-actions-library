@@ -29,5 +29,5 @@ runs:
             owner: context.repo.owner, 
             repo: context.repo.repo,
             issue_number: context.issue.number,
-            body: 'Lint Helm chart:\n<details><summary>Show result</summary>```yaml\n' + lint_result + '\n```</details>'
+            body: 'Lint Helm chart:\n<details><summary>Show result</summary>' + lint_result + '\n</details>'
           });
