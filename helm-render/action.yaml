@@ -28,11 +28,17 @@ runs:
         script: |
           const fs = require('fs');
           const helm_results = fs.readFileSync('content.yaml', 'utf8');
-
+          let output = '### Rendered Helm chart:\n\n\`helm template testing ${{ inputs.template_path }} ${{ inputs.template_args }}\`'
+          
           if (${{ inputs.report_full_template }}) {
-            output = '# Rendered Helm chart:\n\n\`\`\`yaml\n' + helm_results + '\n'
+            output += '\n\n<details>';
+            output += '\n\n<summary>Show result</summary>';
+            output += '\`\`\`\n';
+            output += helm_results;
+            output += '\n\`\`\`';
+            output += '\n\n</details>';
           } else {
-            output = 'You can check the full output in Action step \`render-template\`' 
+            output += 'You can check the full output in Action step \`render-template\`' 
           }
           
           github.rest.issues.createComment ({
