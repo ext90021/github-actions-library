@@ -30,7 +30,7 @@ runs:
           const helm_results = fs.readFileSync('content.yaml', 'utf8');
 
           if (${{ inputs.report_full_template }}) {
-            output = 'Rendered Helm chart:\n<details><summary>Show result</summary>' + helm_results + '\n</details>'
+            output = 'Rendered Helm chart:\n\n<details><summary>Show result</summary>\n\n' + helm_results + '\n\n</details>'
           } else {
             output = 'You can check the full output in Action step \`render-template\`' 
           }
