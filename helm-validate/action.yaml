@@ -37,7 +37,7 @@ runs:
       with: 
         script: | 
           const output = `#### ❗️ Helm lint failed ❗️ 
-          \`\`\`yaml 
+          \`\`\` 
           \$ helm lint ${{ inputs.template_path }} --with-subcharts --strict  ${{ inputs.lint_args }} 
           ${{ steps.lint.outputs.lint_result }} 
           \`\`\` 
@@ -68,24 +68,15 @@ runs:
       with: 
         script: | 
           const fs = require("fs"); 
-          const helm_results = fs.readFileSync("content.yaml", "utf8"); 
-          let output = `#### Helm template was successfully rendered\n\`helm template testing ${{ inputs.template_path }} ${{ inputs.template_args }}\``;
-          if (${{ inputs.report_full_template }}) { 
-            output += `\n<details>\n<summary>Show rendered template</summary>\n\`\`\`\n`;              
-            output += helm_results; 
-            output += `\n\`\`\`\n</details>`; 
-          } else { 
-            let jobsResponse = await github.rest.actions.listJobsForWorkflowRun({ 
+          const { context, github } = require ('@actions/github#);
+          
+          const content = fs.readFileSync("content.yaml", "utf8"); 
+          const prNumber = context.payload.pull_request.number;
+
+          github.issues.createComment (
               owner: context.repo.owner, 
-              repo: context.repo.repo, 
-              run_id: context.runId 
+              repo: context.repo.repo,
+              issue_numer: prNumber,
+              body: 'Rendered Helm chart:\n```yaml\n' + content + '\n```'
             }); 
-            output +=`\nYou can check the full output in Action step \`helm-validate\`: `;
-            output += jobsResponse.data.jobs[0].html_url
-          } 
-          github.rest.issues.createComment({ 
-            issue_number: context.issue.number, 
-            owner: context.repo.owner, 
-            repo: context.repo.repo, 
-            body: output 
-          })
+          }
