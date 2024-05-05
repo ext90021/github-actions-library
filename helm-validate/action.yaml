@@ -28,18 +28,18 @@ runs:
       with: 
         script: |
           const fs = require('fs');
-
           const content = fs.readFileSync('content.yaml', 'utf8');
-          const context = github.context;
 
-          if (context.payload && context.payload.pull_request.number) {
-            const prNumber = context.payload.pull_request.number;
+          if (github.context.payload && github.context.payload.pull_request.number) {
+            const prNumber = github.context.payload.pull_request.number;
           
             github.issues.createComment ({
-              owner: context.repo.owner, 
-              repo: context.repo.repo,
+              owner: github.context.repo.owner, 
+              repo: github.context.repo.repo,
               issue_numer: prNumber,
               body: 'Rendered Helm chart:\n```yaml\n' + content + '\n```'
             });
+          } else {
+            console.log('Not a pull request event or payload not available.');
           }
 
