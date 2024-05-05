@@ -17,51 +17,10 @@ inputs:
 runs: 
   using: "composite" 
   steps: 
-    - name: Lint 
-      id: lint 
-      run: | 
-        helm lint ${{ inputs.template_path }} --with-subcharts --strict  ${{ inputs.lint_args }} 2>&1 | tee lint.result 
-        result_code=${PIPESTATUS[0]} 
-        # using the :::set-output command will cut the string to just the first line of content, so we need to do string substitution 
-        content=$(cat lint.result) 
-        content="${content//'%'/'%25'}" 
-        content="${content//$'\n'/'%0A'}" 
-        content="${content//$'\r'/'%0D'}" 
-        echo "::set-output name=lint_result::$content" 
-        exit $result_code 
-      shell: bash {0} 
- 
-    - name: Report Lint failure 
-      uses: actions/github-script@v6 
-      if: ${{ failure() }} 
-      with: 
-        script: | 
-          const output = `#### ❗️ Helm lint failed ❗️ 
-          \`\`\` 
-          \$ helm lint ${{ inputs.template_path }} --with-subcharts --strict  ${{ inputs.lint_args }} 
-          ${{ steps.lint.outputs.lint_result }} 
-          \`\`\` 
-          `; 
-          github.rest.issues.createComment({ 
-            issue_number: context.issue.number, 
-            owner: context.repo.owner, 
-            repo: context.repo.repo, 
-            body: output 
-          }) 
     - name: Render template 
       id: template 
       run: | 
         helm template testing ${{ inputs.template_path }} ${{ inputs.template_args }} 2>&1 | tee content.yaml 
-        result_code=${PIPESTATUS[0]} 
-        # using the :::set-output command will cut the string to just the first line of content, so we need to do string substitution 
-        content=$(cat content.yaml) 
-        content="${content//'%'/'%25'}" 
-        content="${content//$'\n'/'%0A'}" 
-        content="${content//$'\r'/'%0D'}" 
-        echo "::set-output name=content::$content" 
-        echo "${{ github }}" 
-        exit $result_code 
-      shell: bash {0} 
  
     - name: Report Template result 
       uses: actions/github-script@v6 
