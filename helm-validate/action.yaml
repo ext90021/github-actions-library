@@ -21,6 +21,7 @@ runs:
       id: template 
       run: | 
         helm template testing ${{ inputs.template_path }} ${{ inputs.template_args }} 2>&1 | tee content.yaml 
+      shell: bash
  
     - name: Report Template result 
       uses: actions/github-script@v6 
