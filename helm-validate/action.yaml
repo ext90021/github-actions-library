@@ -37,7 +37,7 @@ runs:
       with: 
         script: | 
           const output = `#### ❗️ Helm lint failed ❗️ 
-          \`\`\` 
+          \`\`\`yaml 
           \$ helm lint ${{ inputs.template_path }} --with-subcharts --strict  ${{ inputs.lint_args }} 
           ${{ steps.lint.outputs.lint_result }} 
           \`\`\` 
@@ -75,7 +75,7 @@ runs:
             output += ` 
             <details> 
             <summary>Show rendered template</summary> 
-            \`\`\` 
+            \`\`\`yaml 
             `; 
              
             output += helm_results; 
