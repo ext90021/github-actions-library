@@ -76,5 +76,5 @@ runs:
               repo: context.repo.repo,
               issue_numer: prNumber,
               body: 'Rendered Helm chart:\n```yaml\n' + content + '\n```'
-            }); 
-          }
+            });
+
