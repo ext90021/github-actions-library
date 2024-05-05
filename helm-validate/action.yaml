@@ -1,4 +1,4 @@
-name: "Validate Helm Chart" 
+t.name: "Validate Helm Chart" 
 description: "Runs basic helm validation: lint, template render" 
 inputs: 
   template_path: 
@@ -30,7 +30,7 @@ runs:
           const fs = require('fs');
           const content = fs.readFileSync('content.yaml', 'utf8');
        
-          github.issues.createComment ({
+          github.rest.issues.createComment ({
             owner: context.repo.owner, 
             repo: context.repo.repo,
             issue_numer: context.issue.number,
