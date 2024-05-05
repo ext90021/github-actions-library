@@ -14,8 +14,8 @@ inputs:
 runs: 
   using: "composite" 
   steps: 
-    - name: Render template 
-      id: template 
+    - name: Render template
+      id: render_template
       run: | 
         helm template testing ${{ inputs.template_path }} ${{ inputs.template_args }} 2>&1 | tee content.yaml 
         result_code=${PIPESTATUS[0]}
@@ -23,7 +23,8 @@ runs:
       shell: bash
  
     - name: Report Template result 
-      uses: actions/github-script@v6 
+      uses: actions/github-script@v6
+      needs: render_template
       with: 
         script: |
           const fs = require('fs');
