@@ -1,5 +1,5 @@
-t.name: "Validate Helm Chart" 
-description: "Runs basic helm validation: lint, template render" 
+name: "Render Helm Chart" 
+description: "Runs basic Helm template render" 
 inputs: 
   template_path: 
     description: 'path to template' 
