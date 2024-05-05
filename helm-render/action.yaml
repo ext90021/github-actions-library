@@ -31,22 +31,9 @@ runs:
           let output = '### Rendered Helm chart:\n\n\`helm template testing ${{ inputs.template_path }} ${{ inputs.template_args }}\`'
           
           if (${{ inputs.report_full_template }}) {
-            output += `
-            
-            <details>
-  
-            <summary>Show rendered template</summary>
-            
-            \`\`\`
-            `;
-            
+            output += `\n\n<details>\n\n<summary>Show rendered template</summary>\n\n\`\`\``;
             output += helm_results;
-            
-            output += `
-            \`\`\`
-            
-            </details>
-            `;
+            output += `\n\`\`\`\n\n</details>\n`;
           } else {
             output += 'You can check the full output in Action step \`render-template\`' 
           }
