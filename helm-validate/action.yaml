@@ -8,10 +8,7 @@ inputs:
     description: 'Indicated if the full template should be posted to github comment. Consider switchit it off for massive charts' 
     default: true 
     required: false 
-  lint_args: 
-    description: 'Adds additional arguments to "helm lint" command' 
-    required: false 
-  template_args: 
+  render_args: 
     description: 'Adds additional arguments to "helm template" command' 
     required: false 
 runs: 
