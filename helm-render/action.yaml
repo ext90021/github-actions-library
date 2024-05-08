@@ -34,8 +34,13 @@ runs:
           let output = '### Rendered Helm chart:\n\n\`helm template testing ${{ inputs.template_path }} ${{ inputs.template_args }}\`'
           
           if ("${{ steps.render_template.outcome }}" == "success") {
-            output += `\n\n:tada:Render successful<details><summary>Show rendered template</summary>\n\n\`\`\`yaml\n`;
+            output += `\n\n:tada:Render successful\n`;
           }
+          else {
+            output += `\n\n:ghost:Render unsuccessful\n`;
+          }
+          
+          output += `<details><summary>Show rendered template</summary>\n\n\`\`\`yaml\n`;
           
           if (${{ inputs.report_full_template }}) {
             output += `\n\n<details><summary>Show rendered template</summary>\n\n\`\`\`yaml\n`;
