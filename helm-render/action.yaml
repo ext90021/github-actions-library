@@ -31,11 +31,11 @@ runs:
           let output = '### Rendered Helm chart:\n\n\`helm template testing ${{ inputs.template_path }} ${{ inputs.template_args }}\`'
           
           if (${{ inputs.report_full_template }}) {
-            output += `\n\n<details><summary>Show rendered template</summary>\n\n\`\`\`yaml\n`;
+            output += `\n\n:tada:<details><summary>Show rendered template</summary>\n\n\`\`\`yaml\n`;
             output += helm_results;
             output += `\n\`\`\`\n\n</details>\n\n`;
-            output += `*Workflow: \`${{ github.workflow }}\`, Job; \`${{ github.job }}\`\n`;
-            output += `Pushed by: \`${{ github.actor }}\`*\n`;
+            output += `*Workflow: \`${{ github.workflow }}\` Job: \`${{ github.job }}\`\n`;
+            output += `Event: \`${{ github.event }}\` Pushed by: \`${{ github.actor }}\`*\n`;
           } else {
             output += 'You can check the full output in Action step \`render-template\`' 
           }
