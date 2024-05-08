@@ -47,7 +47,7 @@ runs:
             output += helm_results;
             output += `\n\`\`\`\n\n</details>\n\n`;
             output += `*Workflow: \`${{ github.workflow }}\` Job: \`${{ github.job }}\`\n`;
-            output += `Event: \`${{ github.event }}\` Pushed by: \`${{ github.actor }}\`*\n`;
+            output += `Event: \`${{ github.event_name }}\` Pushed by: \`${{ github.actor }}\`*\n`;
           } else {
             output += 'You can check the full output in Action step \`render-template\`' 
           }
