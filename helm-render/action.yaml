@@ -15,6 +15,7 @@ runs:
   using: "composite" 
   steps: 
     - name: Render template
+      id: render_template
       run: | 
         helm template testing ${{ inputs.template_path }} ${{ inputs.template_args }} 2>&1 | tee content.yaml 
         result_code=${PIPESTATUS[0]}
@@ -23,15 +24,21 @@ runs:
  
     - name: Report Template result 
       uses: actions/github-script@v6
+
       if: ${{ github.event_name == 'pull_request' }}
       with:
         script: |
           const fs = require('fs');
           const helm_results = fs.readFileSync('content.yaml', 'utf8');
+                   
           let output = '### Rendered Helm chart:\n\n\`helm template testing ${{ inputs.template_path }} ${{ inputs.template_args }}\`'
           
+          if (${{ steps.render_template.outcome }} == "success") {
+            output += `\n\n:tada:Render successful<details><summary>Show rendered template</summary>\n\n\`\`\`yaml\n`;
+          }
+          
           if (${{ inputs.report_full_template }}) {
-            output += `\n\n:tada:<details><summary>Show rendered template</summary>\n\n\`\`\`yaml\n`;
+            output += `\n\n<details><summary>Show rendered template</summary>\n\n\`\`\`yaml\n`;
             output += helm_results;
             output += `\n\`\`\`\n\n</details>\n\n`;
             output += `*Workflow: \`${{ github.workflow }}\` Job: \`${{ github.job }}\`\n`;
