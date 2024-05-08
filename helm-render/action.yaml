@@ -33,7 +33,7 @@ runs:
                    
           let output = '### Rendered Helm chart:\n\n\`helm template testing ${{ inputs.template_path }} ${{ inputs.template_args }}\`'
           
-          if (${{ steps.render_template.outcome }} == "success") {
+          if ("${{ steps.render_template.outcome }}" == "success") {
             output += `\n\n:tada:Render successful<details><summary>Show rendered template</summary>\n\n\`\`\`yaml\n`;
           }
           
