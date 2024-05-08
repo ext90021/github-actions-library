@@ -33,6 +33,7 @@ runs:
             output += `\n\n<details>\n\n<summary>Show rendered template</summary>\n\n\`\`\``;
             output += helm_results;
             output += `\n\`\`\`\n\n</details>\n`;
+            output += `\nEvent: \`${{ github.event_name}}\`, pushed by @${{ github.actor }}\n`;
           } else {
             output += 'You can check the full output in Action step \`render-template\`' 
           }
