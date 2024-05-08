@@ -39,9 +39,7 @@ runs:
           else {
             output += `\n\n:ghost:Render unsuccessful\n`;
           }
-          
-          output += `<details><summary>Show rendered template</summary>\n\n\`\`\`yaml\n`;
-          
+                
           if (${{ inputs.report_full_template }}) {
             output += `\n\n<details><summary>Show rendered template</summary>\n\n\`\`\`yaml\n`;
             output += helm_results;
