@@ -46,7 +46,7 @@ runs:
           var chunks = chunkString(render, maxGitHubCommentLength);
           for (let i = 0; i < chunks.length; i++) {
             const commentBody = `
-            #### Part \`${i + 1}\`
+            #### Part \`${i + 1}\` Helm template render :tada:
 
             <details><summary>Show result</summary>
 
