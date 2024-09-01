@@ -17,7 +17,7 @@ runs:
     - name: Render template
       id: render_template
       run: | 
-        helm template testing ${{ inputs.template_path }} ${{ inputs.template_args }} 2>&1 | tee content.yaml 
+        helm template testing ${{ inputs.template_path }} ${{ inputs.template_args }} 2>&1 | tee /tmp/content.yaml 
         result_code=${PIPESTATUS[0]}
         exit $result_code
       shell: bash
@@ -28,31 +28,59 @@ runs:
       if: ${{ github.event_name == 'pull_request' }}
       with:
         script: |
-          const fs = require('fs');
-          const helm_results = fs.readFileSync('content.yaml', 'utf8');
-                   
-          let output = '### Rendered Helm chart:\n\n\`helm template testing ${{ inputs.template_path }} ${{ inputs.template_args }}\`'
-          
-          if ("${{ steps.render_template.outcome }}" == "success") {
-            output += `\n\n:tada:Render successful\n`;
+          const fs = require("fs");
+          const plan = fs.readFileSync("/tmp/content.yaml", "utf8");
+          const maxGitHubCommentLength = 65536;
+
+          function chunkString(str, size) {
+            const numChunks = Math.ceil(str.length / size)
+            const chunks = new Array(numChunks)
+            for (let i = 0, o = 0; i < numChunks; ++i, o += size) {
+              chunks[i] = str.substr(o, size)
+            }
+            return chunks
           }
-          else {
-            output += `\n\n:ghost:Render unsuccessful\n`;
+
+          function renderStepOutcome(text, outcome) {
+            return `- ${text}: \`${outcome}\` ${outcome == "success" ? " :white_check_mark:" : " :no_entry_sign:"}`
           }
-                
-          if (${{ inputs.report_full_template }}) {
-            output += `\n\n<details><summary>Show rendered template</summary>\n\n\`\`\`yaml\n`;
-            output += helm_results;
-            output += `\n\`\`\`\n\n</details>\n\n`;
-            output += `*Workflow: \`${{ github.workflow }}\` Job: \`${{ github.job }}\`\n`;
-            output += `Event: \`${{ github.event_name }}\` Pushed by: \`${{ github.actor }}\`*\n`;
-          } else {
-            output += 'You can check the full output in Action step \`render-template\`' 
+
+          function successfulRun(outcomeList) {
+            return `${outcomeList.every(currentValue => currentValue == "success") ? " :tada:" : " :ghost:"}`
           }
-          
-          github.rest.issues.createComment ({
-            owner: context.repo.owner, 
-            repo: context.repo.repo,
-            issue_number: context.issue.number,
-            body: output
-          });
+
+          // diff file size may exceed the maximum allowed number of characters in a comment
+          // chunk it and create a comment for each chunk
+          var chunks = chunkString(plan, maxGitHubCommentLength);
+          for (let i = 0; i < chunks.length; i++) {
+            const commentBody = `
+            #### Part \`${i + 1}\` of attempt \`${{ github.run_attempt }}\`, run \`${{ github.run_id }}\`${
+              successfulRun([
+              "${{ steps.render-templates-live.outcome }}",
+              "${{ steps.render-templates-pr.outcome }}",
+              "${{ steps.save-diff.outcome }}"]) }
+            ${renderStepOutcome(":traffic_light: Render templates [live]", "${{ steps.render-templates-live.outcome }}")}
+            ${renderStepOutcome(":pushpin: Render templates [pr]", "${{ steps.render-templates-pr.outcome }}")}
+            ${renderStepOutcome(":page_with_curl: Diff", "${{ steps.save-diff.outcome }}")}
+            
+            <details><summary>Show Diff</summary>
+
+            \`\`\`diff\n
+            ${chunks[i]}
+            \`\`\`
+
+            </details>
+
+            *Target Environment: \`${{ matrix.target_environment }}\`
+            Event: \`${{ github.event_name }}\`, pushed by @${{ github.actor }}
+            Workflow: \`${{ github.workflow }}\`, Job: \`${{ github.job }}\`*
+
+            `;
+
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: commentBody
+            })
+          }
